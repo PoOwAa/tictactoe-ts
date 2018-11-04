@@ -24,6 +24,8 @@ export interface GameState {
   squares: string[];
   // Következő X lesz-e vagy sem
   xIsNext: boolean;
+  // Nyertes játékos
+  winner: string;
 }
 
 export default class Game extends Component<GameProps, GameState> {
@@ -40,7 +42,8 @@ export default class Game extends Component<GameProps, GameState> {
 
     this.state = {
       squares: Array(this.props.dimensions * this.props.dimensions).fill(null),
-      xIsNext: true
+      xIsNext: true,
+      winner: null
     };
   }
 
@@ -72,8 +75,8 @@ export default class Game extends Component<GameProps, GameState> {
    * @memberof Game
    */
   handleClick(i: number) {
-    // Csak akkor működjön ha még nem volt beállítva a mező értéke
-    if (this.state.squares[i] === null) {
+    // Csak akkor működjön ha még nem volt beállítva a mező értéke és még tart a játék
+    if (this.state.squares[i] === null && this.state.winner === null) {
       // Játék aktuális állása
       const squares = this.state.squares;
       // Mező értékének beállítása
@@ -90,6 +93,9 @@ export default class Game extends Component<GameProps, GameState> {
       if (winner) {
         // TODO: handle winner
         console.log("We have a winner", winner);
+        this.setState({
+          winner
+        });
         return winner;
       }
 
@@ -112,19 +118,18 @@ export default class Game extends Component<GameProps, GameState> {
       let sum = 0;
       for (let col = 0; col < this.props.dimensions; col++) {
         if (this.state.squares[row * this.props.dimensions + col] === "X") {
-          sum += 1;
-        } else if (
-          this.state.squares[row * this.props.dimensions + col] === "O"
-        ) {
-          sum += -1;
-        } else {
-          sum += 0;
+          sum++;
+        }
+        if (this.state.squares[row * this.props.dimensions + col] === "O") {
+          sum--;
         }
       }
 
+      // X nyert
       if (sum === this.props.dimensions) {
         return "X";
       }
+      // O nyert
       if (sum === -this.props.dimensions) {
         return "O";
       }
@@ -134,25 +139,60 @@ export default class Game extends Component<GameProps, GameState> {
       let sum = 0;
       for (let row = 0; row < this.props.dimensions; row++) {
         if (this.state.squares[row * this.props.dimensions + col] === "X") {
-          sum += 1;
-        } else if (
-          this.state.squares[row * this.props.dimensions + col] === "O"
-        ) {
-          sum += -1;
-        } else {
-          sum += 0;
+          sum++;
+        }
+        if (this.state.squares[row * this.props.dimensions + col] === "O") {
+          sum--;
         }
       }
 
+      // X nyert
       if (sum === this.props.dimensions) {
         return "X";
       }
+      // O nyert
       if (sum === -this.props.dimensions) {
         return "O";
       }
     }
     // Átlók
-    // TODO:
+    let sum = 0;
+    for (let i = 0; i < this.props.dimensions; i++) {
+      if (this.state.squares[i * this.props.dimensions + i] === "X") {
+        sum++;
+      }
+      if (this.state.squares[i * this.props.dimensions + i] === "O") {
+        sum--;
+      }
+    }
+    // X nyert
+    if (sum === this.props.dimensions) {
+      return "X";
+    }
+    // O nyert
+    if (sum === -this.props.dimensions) {
+      return "O";
+    }
+
+    sum = 0;
+    let col = 0;
+    for (let row = this.props.dimensions - 1; row >= 0; row--) {
+      if (this.state.squares[row * this.props.dimensions + col] === "X") {
+        sum++;
+      }
+      if (this.state.squares[row * this.props.dimensions + col] === "O") {
+        sum--;
+      }
+      col++;
+    }
+    // X nyert
+    if (sum === this.props.dimensions) {
+      return "X";
+    }
+    // O nyert
+    if (sum === -this.props.dimensions) {
+      return "O";
+    }
     return false;
   }
 }
