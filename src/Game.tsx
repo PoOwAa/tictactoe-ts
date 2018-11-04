@@ -1,12 +1,32 @@
 import { Component, h } from "preact";
 import Board from "./Board";
 
-// A játék osztály 1 komponens szintű paramétert vár, az a pálya mérete
+/**
+ * Properties for initialization
+ *
+ * @export
+ * @interface GameProps
+ */
 export interface GameProps {
+  // A játék osztály 1 komponens szintű paramétert vár, az a pálya mérete
   dimensions: number;
 }
 
-export default class Game extends Component<GameProps, any> {
+/**
+ * Azok a változók amik ha változnak,
+ * akkor a böngészőben is egyből látszódik a változás
+ *
+ * @export
+ * @interface GameState
+ */
+export interface GameState {
+  // Magák a mezők
+  squares: string[];
+  // Következő X lesz-e vagy sem
+  xIsNext: boolean;
+}
+
+export default class Game extends Component<GameProps, GameState> {
   /**
    * Creates an instance of Game.
    *
@@ -18,12 +38,8 @@ export default class Game extends Component<GameProps, any> {
     // Component osztály konstruktora
     super(props);
 
-    // state property egy bindolt paraméter, ha itt változik a tartalma
-    // egy változónak, az egyből változik a frontenden is
     this.state = {
-      // Magák a mezők, null értékkel feltöltjük
       squares: Array(this.props.dimensions * this.props.dimensions).fill(null),
-      // Következő X lesz-e vagy sem
       xIsNext: true
     };
   }
