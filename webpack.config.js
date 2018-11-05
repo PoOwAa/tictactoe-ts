@@ -2,7 +2,6 @@
 const path = require("path");
 
 module.exports = {
-  // Készítsen .map fájlt
   devtool: "source-map",
   // Hol van az alkalmazás forráskódja (TypeScriptben)
   entry: ["./src/app"],
